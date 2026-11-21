@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://projectdance.com/sitemap.xml
+Sitemap: https://projecthdance.com/sitemap.xml
