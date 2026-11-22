@@ -230,10 +230,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <div style="display: flex; gap: 24px; padding: 16px 0; border-top: 1px solid #26262B; border-bottom: 1px solid #26262B"><span style="min-width: 88px; font-size: 14px; font-weight: 700; color: #A3A3AB">유튜브</span><a href="https://www.youtube.com/@PROJECTH-w3y" target="_blank" rel="noopener">@PROJECTH-w3y</a></div>
 </div>
 </div>
-<form id="ph-form" style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+<form id="ph-form" style="position: relative; flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <label for="ph-type" style="font-size: 14px; font-weight: 700">문의 유형</label>
-<select id="ph-type" style="height: 52px; padding: 0 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit">
+<select id="ph-type" name="문의 유형" style="height: 52px; padding: 0 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit">
 <option>안무 제작 · 시안</option>
 <option>퍼포먼스 팀 · 백업 댄서 섭외</option>
 <option>행사 · 광고 출연</option>
@@ -244,18 +244,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px">
 <div style="display: flex; flex-direction: column; gap: 8px">
 <label for="ph-name" style="font-size: 14px; font-weight: 700">이름 · 소속</label>
-<input id="ph-name" type="text" required placeholder="이름 / 소속" style="height: 52px; padding: 0 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit; box-sizing: border-box; width: 100%">
+<input id="ph-name" name="이름 · 소속" type="text" required placeholder="이름 / 소속" style="height: 52px; padding: 0 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit; box-sizing: border-box; width: 100%">
 </div>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <label for="ph-tel" style="font-size: 14px; font-weight: 700">연락처</label>
-<input id="ph-tel" type="text" required placeholder="전화 또는 이메일" style="height: 52px; padding: 0 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit; box-sizing: border-box; width: 100%">
+<input id="ph-tel" name="연락처" type="text" required placeholder="전화 또는 이메일" style="height: 52px; padding: 0 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit; box-sizing: border-box; width: 100%">
 </div>
 </div>
 <div style="display: flex; flex-direction: column; gap: 8px">
 <label for="ph-msg" style="font-size: 14px; font-weight: 700">내용</label>
-<textarea id="ph-msg" rows="6" placeholder="프로젝트 내용과 일정을 간단히 적어주세요." style="padding: 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit; resize: vertical; box-sizing: border-box; width: 100%"></textarea>
+<textarea id="ph-msg" name="내용" rows="6" placeholder="프로젝트 내용과 일정을 간단히 적어주세요." style="padding: 14px; background: #0B0B0C; color: #F2F2F3; border: 1px solid #4A4A52; border-radius: 2px; font: inherit; resize: vertical; box-sizing: border-box; width: 100%"></textarea>
 </div>
-<button type="submit" style="height: 56px; background: var(--ac); color: #0B0B0C; border: 0; border-radius: 2px; font: inherit; font-weight: 900; font-size: 17px; cursor: pointer">문의 보내기</button>
+<input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position: absolute; left: -9999px; width: 1px; height: 1px">
+<button id="ph-send" type="submit" style="height: 56px; background: var(--ac); color: #0B0B0C; border: 0; border-radius: 2px; font: inherit; font-weight: 900; font-size: 17px; cursor: pointer">문의 보내기</button>
+<p id="ph-status" role="status" aria-live="polite" style="margin: 0; min-height: 24px; font-size: 15px; color: #C4C4CA"></p>
 </form>
 </div>
 </section>
@@ -278,13 +280,41 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 </div>
 <script>
-document.getElementById('ph-form').addEventListener('submit', function (e) {
-  e.preventDefault();
+(function () {
+  var form = document.getElementById('ph-form');
+  var btn = document.getElementById('ph-send');
+  var status = document.getElementById('ph-status');
   var v = function (id) { return document.getElementById(id).value.trim(); };
-  var subject = '[PROJECT H 문의] ' + v('ph-type') + ' - ' + v('ph-name');
-  var text = '문의 유형: ' + v('ph-type') + '\n이름 · 소속: ' + v('ph-name') + '\n연락처: ' + v('ph-tel') + '\n\n' + v('ph-msg');
-  window.location.href = 'mailto:diskjokey2@naver.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
-});
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (form.querySelector('[name="_honey"]').value) return;
+    btn.disabled = true; btn.textContent = '보내는 중...';
+    status.style.color = '#C4C4CA'; status.textContent = '';
+    var data = {
+      '문의 유형': v('ph-type'),
+      '이름 · 소속': v('ph-name'),
+      '연락처': v('ph-tel'),
+      '내용': v('ph-msg'),
+      _subject: '[PROJECT H 문의] ' + v('ph-type') + ' - ' + v('ph-name'),
+      _template: 'table',
+      _captcha: 'false'
+    };
+    fetch('https://formsubmit.co/ajax/diskjokey2@naver.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) { return r.json(); }).then(function (res) {
+      if (res && (res.success === true || res.success === 'true')) {
+        form.reset();
+        status.style.color = '#C6FF3D';
+        status.textContent = '문의가 접수되었습니다. 확인 후 담당자가 연락드립니다.';
+      } else { throw new Error('fail'); }
+    }).catch(function () {
+      status.style.color = '#F05A78';
+      status.textContent = '전송에 실패했습니다. diskjokey2@naver.com 또는 010-2593-3051로 연락해 주세요.';
+    }).then(function () { btn.disabled = false; btn.textContent = '문의 보내기'; });
+  });
+})();
 </script>
 </body>
 </html>
